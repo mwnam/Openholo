@@ -36,8 +36,8 @@ function compile_openholo_library(){
 # execute_openholo_test
 ##############################################
 function execute_openholo_test(){
-	cd $ROOT_PATH/Test
-  	echo $ROOT_PATH/Test
+	cd $ROOT_PATH
+  	echo $ROOT_PATH
 
 	FILE_NAME=OpenholoGeneration
 	SOURCE_NAME=OpenholoGeneration.cpp
