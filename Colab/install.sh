@@ -28,7 +28,7 @@ function compile_openholo_library(){
 	cd $ROOT_PATH
 	mkdir -p build
 	cd build
-	cmake ..
+	cmake ../../
 	make
 }
 
