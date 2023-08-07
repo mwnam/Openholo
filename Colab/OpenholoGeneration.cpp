@@ -62,15 +62,14 @@ void ex_Openholo(const char* conf, const char* input, const char* encod, const c
 		openholo_enc = "Imaginary";
 	}
 
-	Hologram->readConfig(conf); // "Config/Generation_PointCloud (RGB).xml"
-	Hologram->loadPointCloud(input); // "PointCloud & WRP/pointcloud_1470.ply"
+	Hologram->readConfig(conf);
+	Hologram->loadPointCloud(input);
 	Hologram->generateHologram(ophPointCloud::PC_DIFF_RS);
 	Hologram->encoding(encoding);
 	Hologram->normalize();
 
-
 	char buf[512] = {0,};
-	sprintf(buf, "%s","Result/PointCloud_", openholo_enc.c_str() ,".bmp");
+	sprintf(buf, "%s%s%s","Result/PointCloud_", openholo_enc.c_str() ,".bmp");
 	Hologram->save(buf, 24);
 	Hologram->release();
 
@@ -105,11 +104,6 @@ void ex_DepthMap(const char* conf, char* p[3], const char* encod, const char* mo
 		}
 	}
 
-	printf("DepthMap config path :  %s \n", conf);
-	printf("DepthMap readImageDepth p[0] :  %s \n", p[0]);
-	printf("DepthMap readImageDepth p[1] :  %s \n", p[1]);
-	printf("DepthMap readImageDepth p[2] :  %s \n", p[2]);
-
 	if (0 == strcmp(encod, "0")) {   // encod = 0 --> ENCODE_PHASE
 		encoding = ophGen::ENCODE_PHASE;
 		printf("encoding :  %d \n", encoding);
@@ -143,7 +137,7 @@ void ex_DepthMap(const char* conf, char* p[3], const char* encod, const char* mo
 	Hologram->normalize();
 
 	char buf[512] = {0,};
-	sprintf(buf, "%s","Result/DepthMap_", depthmap_enc.c_str() , ".bmp");
+	sprintf(buf, "%s%s%s","Result/DepthMap_", depthmap_enc.c_str() , ".bmp");
 	Hologram->save(buf, nChannel * 8);
 
 	Hologram->release();
@@ -208,13 +202,12 @@ void ex_LightField(const char* conf, const char* input, const char* encod, const
 	Hologram->readConfig(conf); // "Config/Generation_PointCloud (RGB).xml"
 	Hologram->loadLF(input, "bmp"); // "PointCloud & WRP/pointcloud_1470.ply"
 	Hologram->generateHologram();
-	Hologram->encoding(encoding);
+	((ophGen*)Hologram)->encoding(encoding);
 	Hologram->normalize();
 	ivec2 encode_size = Hologram->getEncodeSize();
 	char buf[512] = {0,};
-	sprintf(buf, "%s","Result/LightField_", lightfield_enc.c_str() , ".bmp");
-//	Hologram->save(buf);
-	Hologram->save(buf, 8, nullptr, encode_size[_X], encode_size[_Y]);
+	sprintf(buf, "%s%s%s","Result/LightField_", lightfield_enc.c_str() , ".bmp");
+	Hologram->save(buf, 8 * Hologram->getContext().waveNum, nullptr, encode_size[_X], encode_size[_Y]);
 	Hologram->release();
 
 	printf("====== ex_LightField END ======\n");
@@ -274,17 +267,16 @@ void ex_TriMesh(const char* conf, const char* input, const char* encod, const ch
 		trimesh_enc = "Imaginary";
 	}
 
-	Hologram->readConfig(conf); // "Config/Generation_PointCloud (RGB).xml"
-	Hologram->loadMeshData(input, "ply"); // "PointCloud & WRP/pointcloud_1470.ply"
+	Hologram->readConfig(conf);
+	Hologram->loadMeshData(input, "ply");
 	Hologram->generateHologram(Hologram->SHADING_FLAT);
 	Hologram->encoding(encoding);
 	Hologram->normalize();
 	ivec2 encode_size = Hologram->getEncodeSize();
 
 	char buf[512] = {0,};
-	sprintf(buf, "%s","Result/TriMesh_", trimesh_enc.c_str() , ".bmp");
-	Hologram->save(buf, 8, nullptr, encode_size[_X], encode_size[_Y]);
-//	Hologram->save(buf);
+	sprintf(buf, "%s%s%s","Result/TriMesh_", trimesh_enc.c_str() , ".bmp");
+	Hologram->save(buf, 8 * Hologram->getContext().waveNum, nullptr, encode_size[_X], encode_size[_Y]);
 	Hologram->release();
 
 	printf("====== TriMesh END ======\n");
@@ -345,15 +337,15 @@ void ex_WRP(const char* conf, const char* input, const char* encod, const char* 
 	}
 
 	Hologram->readConfig(conf); // "Config/Generation_PointCloud (RGB).xml"
-	printf("====== process 1  readConfig  ======\n");
 	Hologram->loadPointCloud(input); // "PointCloud & WRP/pointcloud_1470.ply"
 	Hologram->generateHologram();
-	Hologram->encoding(encoding);
+	((ophGen *)Hologram)->encoding(encoding);
 	Hologram->normalize();
 
 	char buf[512] = {0,};
-	sprintf(buf, "%s","Result/WRP_", wrp_enc.c_str() , ".bmp");
-	Hologram->save(buf);
+	ivec2 encode_size = Hologram->getEncodeSize();
+	sprintf(buf, "%s%s%s","Result/WRP_", wrp_enc.c_str() , ".bmp");
+	Hologram->save(buf, 8* Hologram->getContext().waveNum, nullptr, encode_size[_X], encode_size[_Y]);
 	Hologram->release();
 
 	printf("====== ex_WRP END ======\n");
